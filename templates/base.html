@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{% block title %}Sistema de Préstamos{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="d-flex">
+
+        <!-- SIDEBAR -->
+        <div class="bg-dark text-white p-3 vh-100" style="width: 250px;">
+            <h4>📦 Sistema</h4>
+            <hr>
+
+            <a href="/" class="text-white d-block mb-2">📊 Dashboard</a>
+            <a href="{% url 'lista_equipos' %}" class="text-white d-block mb-2">💻 Equipos</a>
+            <a href="{% url 'lista_prestamos' %}" class="text-white d-block mb-2">📋 Préstamos</a>
+            <a href="/admin/" class="text-white d-block mb-2">👥 Usuarios</a>
+            {% if is_admin %}
+            <a href="/admin-panel" class="text-white d-block mb-2">⚙️ Panel de administración</a>
+            {% endif %}
+
+            {% if is_usuario %}
+            <a href="{% url 'dashboard' %}" class="text-white d-block mb-2">⚙️ Panel de administración</a>
+            {% endif %}
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="btn btn-link text-white p-0">🚪 Salir</button>
+            </form>
+
+        </div>
+
+        <!-- CONTENIDO -->
+        <div class="p-4 w-100">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">📊 Dashboard del Sistema</h2>
+
+<div class="row">
+
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5>Total Equipos</h5>
+                <h3>{{ total_equipos }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5>Disponibles</h5>
+                <h3>{{ disponibles }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-body">
+                <h5>Prestados</h5>
+                <h3>{{ prestados }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5>Mantenimiento</h5>
+                <h3>{{ mantenimiento }}</h3>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="card mt-3 mb-4">
+    <div class="card-body">
+        <h5>Préstamos activos</h5>
+        <h2>{{ prestamos_activos }}</h2>
+    </div>
+</div>
+
+<h4 class="mb-3">Estado de los Equipos</h4>
+
+<canvas id="graficoEquipos"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const datos = JSON.parse('{{ equipos_json|escapejs }}');
+
+    let labels = [];
+    let valores = [];
+
+    datos.forEach(item => {
+        labels.push(item.estado);
+        valores.push(item.total);
+    });
+
+    new Chart(document.getElementById('graficoEquipos'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Cantidad de Equipos',
+                data: valores,
+                backgroundColor: [
+                    '#198754',
+                    '#dc3545',
+                    '#ffc107'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

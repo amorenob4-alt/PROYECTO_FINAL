@@ -1,0 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def dashboard_admin(request):
+return render(request, "dashboard_admin.html")

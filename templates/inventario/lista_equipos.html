@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Equipos</h2>
+
+<a href="{% url 'reporte_equipos_pdf' %}" class="btn btn-danger mb-3">
+    📄 Descargar PDF
+</a>
+
+<a href="{% url 'crear_equipo' %}" class="btn btn-success mb-3">
+    ➕ Nuevo Equipo
+</a>
+
+<form method="get" class="row mb-3">
+
+    <div class="col-md-6">
+        <input type="text" name="buscar" class="form-control" placeholder="Buscar por código, nombre, marca o modelo"
+            value="{{ request.GET.buscar }}">
+    </div>
+
+    <div class="col-md-2">
+        <button class="btn btn-primary w-100">
+            🔍 Buscar
+        </button>
+    </div>
+
+</form>
+
+<table class="table table-bordered table-hover">
+
+    <thead class="table-dark">
+        <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for equipo in equipos %}
+
+        <tr>
+            <td>{{ equipo.codigo }}</td>
+            <td>{{ equipo.nombre }}</td>
+            <td>{{ equipo.categoria }}</td>
+            <td>{{ equipo.marca }}</td>
+            <td>{{ equipo.modelo }}</td>
+            <td>{{ equipo.estado }}</td>
+            <td>
+                <a href="{% url 'editar_equipo' equipo.id %}" class="btn btn-warning btn-sm">
+                    ✏️ Editar
+                </a>
+                <a href="{% url 'eliminar_equipo' equipo.id %}" class="btn btn-danger btn-sm">
+                    🗑 Eliminar
+                </a>
+            </td>
+        </tr>
+
+
+        {% empty %}
+
+        <tr>
+            <td colspan="7" class="text-center">
+                No existen equipos registrados.
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}
