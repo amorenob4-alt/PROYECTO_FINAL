@@ -15,10 +15,10 @@
             <h4>📦 Sistema</h4>
             <hr>
 
-            <a href="/" class="text-white d-block mb-2">📊 Dashboard</a>
+            <a href="{% url 'dashboard' %}" class="text-white d-block mb-2">📊 Dashboard</a>
             <a href="{% url 'lista_equipos' %}" class="text-white d-block mb-2">💻 Equipos</a>
             <a href="{% url 'lista_prestamos' %}" class="text-white d-block mb-2">📋 Préstamos</a>
-            <a href="/admin/" class="text-white d-block mb-2">👥 Usuarios</a>
+            <a href="{% url 'lista_usuarios' %}" class="text-white d-block mb-2">👥 Usuarios</a>
             {% if is_admin %}
             <a href="/admin-panel" class="text-white d-block mb-2">⚙️ Panel de administración</a>
             {% endif %}

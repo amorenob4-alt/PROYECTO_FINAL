@@ -21,6 +21,15 @@ class Prestamo(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+        
+    def clean(self):
+        super().clean()
+        # Validar que la fecha de devolución no sea anterior a la de préstamo
+        if self.fecha_prestamo and self.fecha_devolucion:
+            if self.fecha_devolucion < self.fecha_prestamo:
+                raise ValidationError({
+                    'fecha_devolucion': 'La fecha de devolución no puede ser anterior a la fecha del préstamo.'
+                })
 
         # Si el préstamo está activo, el equipo pasa a Prestado
         if self.estado == "Activo":
