@@ -15,21 +15,29 @@ from prestamo.models import Prestamo
 
 @login_required
 def dashboard(request):
+    # 1. Conteo de equipos por estado
     total_equipos = Equipo.objects.count()
     disponibles = Equipo.objects.filter(estado='Disponible').count()
     prestados = Equipo.objects.filter(estado='Prestado').count()
-    mantenimiento = Equipo.objects.filter(estado="Mantenimiento").count()
+    mantenimiento = Equipo.objects.filter(estado='Mantenimiento').count()
+
+    # 2. Conteo de préstamos activos de la otra app
     prestamos_activos = Prestamo.objects.filter(estado='Activo').count()
-    equipos = Equipo.objects.values('estado').annotate(total=Count('estado'))
 
+    # 3. Agrupación y conteo para alimentar el gráfico de Chart.js
+    equipos_por_estado = Equipo.objects.values('estado').annotate(total=Count('id'))
+    
+    # Convertimos los datos a JSON string para que el JavaScript del HTML lo pueda leer
+    equipos_json = json.dumps(list(equipos_por_estado))
 
+    # 4. Enviamos todas las variables al HTML
     context = {
         'total_equipos': total_equipos,
         'disponibles': disponibles,
         'prestados': prestados,
         'mantenimiento': mantenimiento,
         'prestamos_activos': prestamos_activos,
-        'equipos_json': json.dumps(list(equipos)),
+        'equipos_json': equipos_json,
     }
 
     return render(request, 'dashboard.html', context)
