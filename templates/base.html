@@ -15,16 +15,28 @@
             <h4>📦 Sistema</h4>
             <hr>
 
-            <a href="{% url 'dashboard' %}" class="text-white d-block mb-2">📊 Dashboard</a>
-            <a href="{% url 'lista_equipos' %}" class="text-white d-block mb-2">💻 Equipos</a>
-            <a href="{% url 'lista_prestamos' %}" class="text-white d-block mb-2">📋 Préstamos</a>
-            <a href="{% url 'lista_usuarios' %}" class="text-white d-block mb-2">👥 Usuarios</a>
+            <a href="{% url 'dashboard' %}" class="nav-link text-white">
+                📊 Dashboard
+            </a>
+            <a href="{% url 'lista_equipos' %}" class="nav-link text-white">
+                💻 Equipos
+            </a>
+            <a href="{% url 'lista_prestamos' %}" class="nav-link text-white">
+                📋 Préstamos
+            </a>
+            <a href="{% url 'lista_usuarios' %}" class="nav-link text-white">
+                👥 Usuarios
+            </a>
             {% if is_admin %}
-            <a href="/admin-panel" class="text-white d-block mb-2">⚙️ Panel de administración</a>
+            <a href="/admin-panel" class="nav-link text-white">
+                ⚙️ Panel de administración
+            </a>
             {% endif %}
 
             {% if is_usuario %}
-            <a href="{% url 'dashboard' %}" class="text-white d-block mb-2">⚙️ Panel de administración</a>
+            <a href="{% url 'dashboard' %}" class="nav-link text-white">
+                ⚙️ Panel de administración
+            </a>
             {% endif %}
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
