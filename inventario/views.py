@@ -14,6 +14,7 @@ from .forms import EquipoForm
 from prestamo.models import Prestamo
 
 @login_required
+
 def dashboard(request):
     # 1. Conteo de equipos por estado
     total_equipos = Equipo.objects.count()
@@ -40,7 +41,7 @@ def dashboard(request):
         'equipos_json': equipos_json,
     }
 
-    return render(request, 'dashboard.html', context)
+    return render(request, 'dashboard.html',)
 
 @login_required
 def lista_equipos(request):
