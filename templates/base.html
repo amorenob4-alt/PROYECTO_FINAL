@@ -20,25 +20,35 @@
                     📊 Dashboard
                 </a>
             </li>
-            <a href="{% url 'lista_equipos' %}" class="nav-link text-white">
-                💻 Equipos
-            </a>
-            <a href="{% url 'lista_prestamos' %}" class="nav-link text-white">
-                📋 Préstamos
-            </a>
-            <a href="{% url 'lista_usuarios' %}" class="nav-link text-white">
-                👥 Usuarios
-            </a>
+            <li class="nav-item">
+                <a href="{% url 'lista_equipos' %}" class="nav-link text-white">
+                    💻 Equipos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'lista_prestamos' %}" class="nav-link text-white">
+                    📋 Préstamos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'lista_usuarios' %}" class="nav-link text-white">
+                    👥 Usuarios
+                </a>
+            </li>
             {% if is_admin %}
-            <a href="/admin-panel" class="nav-link text-white">
-                ⚙️ Panel de administración
-            </a>
+            <li class="nav-item">
+                <a href="/admin-panel" class="nav-link text-white">
+                    ⚙️ Panel de administración
+                </a>
+            </li>
             {% endif %}
 
             {% if is_usuario %}
-            <a href="{% url 'dashboard' %}" class="nav-link text-white">
-                ⚙️ Panel de administración
-            </a>
+            <li class="nav-item">
+                <a href="{% url 'dashboard' %}" class="nav-link text-white">
+                    ⚙️ Panel de administración
+                </a>
+            </li>
             {% endif %}
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
