@@ -59,17 +59,18 @@ def lista_equipos(request):
     return render(request, "inventario/lista_equipos.html", {
         "equipos": equipos
     })
-
 @login_required
 def crear_equipo(request):
     if request.method == "POST":
         form = EquipoForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            print("Formulario válido")
+            equipo = form.save()
+            print("Guardado:", equipo.id)
             return redirect("lista_equipos")
         else:
-            print(form.errors)   # ← Agrega esta línea
+            print(form.errors)
 
     else:
         form = EquipoForm()
