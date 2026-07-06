@@ -27,24 +27,31 @@ def lista_prestamos(request):
 
 @login_required
 def crear_prestamo(request):
+    print(">>> CREAR PRESTAMO <<<")
     if request.method == "POST":
+        print("=== Entró al POST ===")
+
         form = PrestamoForm(request.POST)
 
         if form.is_valid():
-            prestamo = form.save(commit=False)
+            print("=== Formulario válido ===")
 
-            # Asignar el usuario que inició sesión
+            prestamo = form.save(commit=False)
             prestamo.usuario = request.user
 
-            # Verificar disponibilidad
-            if prestamo.equipo.estado != "Disponible":
-                form.add_error(
-                    "equipo",
-                    "Este equipo no está disponible."
-                )
-            else:
-                prestamo.save()
-                return redirect("lista_prestamos")
+            print("Equipo:", prestamo.equipo)
+            print("Estado:", prestamo.equipo.estado)
+
+            prestamo.save()
+            print("=== Préstamo guardado ===")
+
+            prestamo.equipo.estado = "Prestado"
+            prestamo.equipo.save()
+
+            return redirect("lista_prestamos")
+        else:
+            print("=== Errores ===")
+            print(form.errors)
 
     else:
         form = PrestamoForm()
