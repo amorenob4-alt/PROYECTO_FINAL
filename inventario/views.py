@@ -31,7 +31,6 @@ def dashboard(request):
     # Convertimos los datos a JSON string para que el JavaScript del HTML lo pueda leer
     equipos_json = json.dumps(list(equipos_por_estado))
 
-    # 4. Enviamos todas las variables al HTML
     context = {
         'total_equipos': total_equipos,
         'disponibles': disponibles,
@@ -41,7 +40,7 @@ def dashboard(request):
         'equipos_json': equipos_json,
     }
 
-    return render(request, 'dashboard.html',)
+    return render(request, 'dashboard.html',context)
 
 @login_required
 def lista_equipos(request):
