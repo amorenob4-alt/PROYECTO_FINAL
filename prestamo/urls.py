@@ -5,6 +5,6 @@ urlpatterns = [
     path( "",views.lista_prestamos,name="lista_prestamos"),
     path( "nuevo/",views.crear_prestamo,name="crear_prestamo"),
     path("reporte/pdf/", views.reporte_prestamos_pdf, name="reporte_prestamos_pdf"),
-    path('', views.dashboard, name='dashboard'),
+    
     
 ]
