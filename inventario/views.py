@@ -64,16 +64,19 @@ def lista_equipos(request):
 def crear_equipo(request):
     if request.method == "POST":
         form = EquipoForm(request.POST)
+
         if form.is_valid():
             form.save()
             return redirect("lista_equipos")
+        else:
+            print(form.errors)   # ← Agrega esta línea
+
     else:
         form = EquipoForm()
 
     return render(request, "inventario/crear_equipo.html", {
         "form": form
-
-})
+    })
 @login_required
 def editar_equipo(request, pk):
     equipo = get_object_or_404(Equipo, pk=pk)
