@@ -101,11 +101,11 @@ Gestión de Equipos
                     style="font-size: 0.88rem;">
                     <option value="">Todos los estados</option>
 
-                    <option value="Disponible" {% if request.GET.estado=='Disponible' %}selected{% endif %}>Disponible
+                    <option value="Disponible" {% if estado=='Disponible' %}selected{% endif %}>Disponible
                     </option>
-                    <option value="Prestado" {% if request.GET.estado=='Prestado' %}selected{% endif %}>Prestado
+                    <option value="Prestado" {% if estado=='Prestado' %}selected{% endif %}>Prestado
                     </option>
-                    <option value="Mantenimiento" {% if request.GET.estado=='Mantenimiento' %}selected{% endif %}>
+                    <option value="Mantenimiento" {% if estado=='Mantenimiento' %}selected{% endif %}>
                         Mantenimiento</option>
                 </select>
             </div>
