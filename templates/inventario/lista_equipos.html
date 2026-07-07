@@ -99,14 +99,21 @@ Gestión de Equipos
                 <select name="estado"
                     class="form-select py-2 rounded-3 shadow-none text-secondary bg-light bg-opacity-50"
                     style="font-size: 0.88rem;">
+
                     <option value="">Todos los estados</option>
 
-                    <option value="Disponible" {% if estado=='Disponible' %}selected{% endif %}>Disponible
+                    <option value="Disponible" {% if estado_disponible %}selected{% endif %}>
+                        Disponible
                     </option>
-                    <option value="Prestado" {% if estado=='Prestado' %}selected{% endif %}>Prestado
+
+                    <option value="Prestado" {% if estado_prestado %}selected{% endif %}>
+                        Prestado
                     </option>
-                    <option value="Mantenimiento" {% if estado=='Mantenimiento' %}selected{% endif %}>
-                        Mantenimiento</option>
+
+                    <option value="Mantenimiento" {% if estado_mantenimiento %}selected{% endif %}>
+                        Mantenimiento
+                    </option>
+
                 </select>
             </div>
             <div class="col-12 col-sm-4 col-md-2">

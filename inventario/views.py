@@ -46,6 +46,7 @@ def dashboard(request):
 def lista_equipos(request):
 
     buscar = request.GET.get("buscar", "")
+    estado = request.GET.get("estado", "")
 
     equipos = Equipo.objects.all()
 
@@ -56,24 +57,27 @@ def lista_equipos(request):
             | Q(marca__icontains=buscar)
             | Q(modelo__icontains=buscar)
         )
+        if estado:
+            equipos = equipos.filter(estado=estado)
+
+    estado_disponible = estado == "Disponible"
+    estado_prestado = estado == "Prestado"
+    estado_mantenimiento = estado == "Mantenimiento"
 
     context = {
-        "equipos": equipos,
-        "buscar": buscar,
-        "total_equipos": Equipo.objects.count(),
-        "disponibles": Equipo.objects.filter(
-            estado="Disponible"
-        ).count(),
-        "prestados": Equipo.objects.filter(
-            estado="Prestado"
-        ).count(),
-        "en_mantenimiento": Equipo.objects.filter(
-            estado="Mantenimiento"
-        ).count(),
+    "equipos": equipos,
+    "buscar": buscar,
+    "estado_disponible": estado_disponible,
+    "estado_prestado": estado_prestado,
+    "estado_mantenimiento": estado_mantenimiento,
+
+    "total_equipos": Equipo.objects.count(),
+    "disponibles": Equipo.objects.filter(estado="Disponible").count(),
+    "prestados": Equipo.objects.filter(estado="Prestado").count(),
+    "en_mantenimiento": Equipo.objects.filter(estado="Mantenimiento").count(),
     }
 
     return render(request, "inventario/lista_equipos.html", context)
-
 
 @login_required
 def crear_equipo(request):
