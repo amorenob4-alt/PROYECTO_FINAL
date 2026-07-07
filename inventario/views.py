@@ -56,9 +56,15 @@ def lista_equipos(request):
             Q(modelo__icontains=buscar)
         )
 
+    # Agregamos los conteos que la nueva plantilla necesita para las tarjetas
     return render(request, "inventario/lista_equipos.html", {
-        "equipos": equipos
+        "equipos": equipos,
+        "total_equipos": Equipo.objects.count(),
+        "disponibles": Equipo.objects.filter(estado="Disponible").count(),
+        "prestados": Equipo.objects.filter(estado="Prestado").count(),
+        "en_mantenimiento": Equipo.objects.filter(estado="Mantenimiento").count(),
     })
+
 @login_required
 def crear_equipo(request):
     if request.method == "POST":
