@@ -15,49 +15,32 @@ from prestamo.models import Prestamo
 
 @login_required
 def dashboard(request):
-    # Inicializamos las variables con valores seguros por defecto
-    total_equipos = 0
-    disponibles = 0
-    prestados = 0
-    mantenimiento = 0
-    prestamos_activos = 0
-    equipos_json = "[]"  # Un JSON vacío seguro para Chart.js
 
-    try:
-        # 1. Conteo de equipos por estado
-        total_equipos = Equipo.objects.count()
-        disponibles = Equipo.objects.filter(estado='Disponible').count()
-        prestados = Equipo.objects.filter(estado='Prestado').count()
-        mantenimiento = Equipo.objects.filter(estado='Mantenimiento').count()
+    total_equipos = Equipo.objects.count()
+    disponibles = Equipo.objects.filter(estado="Disponible").count()
+    prestados = Equipo.objects.filter(estado="Prestado").count()
+    mantenimiento = Equipo.objects.filter(estado="Mantenimiento").count()
 
-        # 2. Conteo de préstamos activos (Protegido por si la app o tabla falla)
-        try:
-            prestamos_activos = Prestamo.objects.filter(estado='Activo').count()
-        except Exception:
-            prestamos_activos = 0
+    prestamos_activos = Prestamo.objects.filter(
+        estado="Activo"
+    ).count()
 
-        # 3. Agrupación para Chart.js
-        equipos_por_estado = list(Equipo.objects.values('estado').annotate(total=Count('id')))
-        if equipos_por_estado:
-            equipos_json = json.dumps(equipos_por_estado)
-
-    except Exception as e:
-        # Si algo falla de raíz, imprimimos el error en los logs de Render
-        print(f"Error detectado en el dashboard: {e}")
+    equipos_por_estado = (
+        Equipo.objects
+        .values("estado")
+        .annotate(total=Count("id"))
+    )
 
     context = {
-        'total_equipos': total_equipos,
-        'disponibles': disponibles,
-        'prestados': prestados,
-        'mantenimiento': mantenimiento,
-        'prestamos_activos': prestamos_activos,
-        'equipos_json': equipos_json,
+        "total_equipos": total_equipos,
+        "disponibles": disponibles,
+        "prestados": prestados,
+        "mantenimiento": mantenimiento,
+        "prestamos_activos": prestamos_activos,
+        "equipos_json": json.dumps(list(equipos_por_estado)),
     }
 
-    # Asegúrate de que la ruta apunte a donde tienes tu archivo real
-    return render(request, 'inventario/dashboard.html', context)
-
-    
+    return render(request, 'dashboard.html', context)
     
 @login_required
 def lista_equipos(request):
