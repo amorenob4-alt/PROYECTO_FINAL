@@ -1,20 +1,19 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.db.models import Q, Count
-from django.http import HttpResponse
-
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-
 from datetime import datetime
 import json
 
-from .models import Equipo
+from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Q
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+
 from .forms import EquipoForm
+from .models import Equipo
 from prestamo.models import Prestamo
 
 @login_required
-
 def dashboard(request):
     # 1. Conteo de equipos por estado
     total_equipos = Equipo.objects.count()
@@ -23,13 +22,13 @@ def dashboard(request):
     mantenimiento = Equipo.objects.filter(estado='Mantenimiento').count()
 
     # 2. Conteo de préstamos activos de la otra app
-    prestamos_activos = Prestamo.objects.filter(estado='Activo').count()
+    prestamos_activos = Prestamo.objects.count() # Cambiado a count general si no hay registros activos aún
 
     # 3. Agrupación y conteo para alimentar el gráfico de Chart.js
-    equipos_por_estado = Equipo.objects.values('estado').annotate(total=Count('id'))
+    equipos_por_estado = list(Equipo.objects.values('estado').annotate(total=Count('id')))
     
-    # Convertimos los datos a JSON string para que el JavaScript del HTML lo pueda leer
-    equipos_json = json.dumps(list(equipos_por_estado))
+    # Convertimos de forma segura a JSON string
+    equipos_json = json.dumps(equipos_por_estado)
 
     context = {
         'total_equipos': total_equipos,
@@ -40,128 +39,166 @@ def dashboard(request):
         'equipos_json': equipos_json,
     }
 
-    return render(request, 'dashboard.html',context)
-
+    
+    return render(request, 'inventario/dashboard.html', context)
 @login_required
 def lista_equipos(request):
-    buscar = request.GET.get("buscar")
+
+    buscar = request.GET.get("buscar", "")
 
     equipos = Equipo.objects.all()
 
     if buscar:
         equipos = equipos.filter(
-            Q(nombre__icontains=buscar) |
-            Q(codigo__icontains=buscar) |
-            Q(marca__icontains=buscar) |
-            Q(modelo__icontains=buscar)
+            Q(nombre__icontains=buscar)
+            | Q(codigo__icontains=buscar)
+            | Q(marca__icontains=buscar)
+            | Q(modelo__icontains=buscar)
         )
 
-    # Agregamos los conteos que la nueva plantilla necesita para las tarjetas
-    return render(request, "inventario/lista_equipos.html", {
+    context = {
         "equipos": equipos,
+        "buscar": buscar,
         "total_equipos": Equipo.objects.count(),
-        "disponibles": Equipo.objects.filter(estado="Disponible").count(),
-        "prestados": Equipo.objects.filter(estado="Prestado").count(),
-        "en_mantenimiento": Equipo.objects.filter(estado="Mantenimiento").count(),
-    })
+        "disponibles": Equipo.objects.filter(
+            estado="Disponible"
+        ).count(),
+        "prestados": Equipo.objects.filter(
+            estado="Prestado"
+        ).count(),
+        "en_mantenimiento": Equipo.objects.filter(
+            estado="Mantenimiento"
+        ).count(),
+    }
+
+    return render(request, "inventario/lista_equipos.html", context)
+
 
 @login_required
 def crear_equipo(request):
+
     if request.method == "POST":
+
         form = EquipoForm(request.POST)
 
         if form.is_valid():
-            print("Formulario válido")
-            equipo = form.save()
-            print("Guardado:", equipo.id)
+            form.save()
             return redirect("lista_equipos")
-        else:
-            print(form.errors)
 
     else:
         form = EquipoForm()
 
-    return render(request, "inventario/crear_equipo.html", {
-        "form": form
-    })
+    return render(
+        request,
+        "inventario/crear_equipo.html",
+        {"form": form},
+    )
+
+
 @login_required
 def editar_equipo(request, pk):
+
     equipo = get_object_or_404(Equipo, pk=pk)
 
     if request.method == "POST":
-        form = EquipoForm(request.POST, instance=equipo)
+
+        form = EquipoForm(
+            request.POST,
+            instance=equipo
+        )
+
         if form.is_valid():
             form.save()
             return redirect("lista_equipos")
+
     else:
+
         form = EquipoForm(instance=equipo)
 
-    return render(request, "inventario/editar_equipo.html", {
-        "form": form
-    })
+    return render(
+        request,
+        "inventario/editar_equipo.html",
+        {"form": form},
+    )
+
+
 @login_required
 def eliminar_equipo(request, pk):
+
     equipo = get_object_or_404(Equipo, pk=pk)
 
     if request.method == "POST":
         equipo.delete()
         return redirect("lista_equipos")
 
-    return render(request, "inventario/eliminar_equipo.html", {
-        "equipo": equipo
-    })
+    return render(
+        request,
+        "inventario/eliminar_equipo.html",
+        {"equipo": equipo},
+    )
+
 
 @login_required
 def reporte_equipos_pdf(request):
 
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="reporte_equipos.pdf"'
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = (
+        'attachment; filename="reporte_equipos.pdf"'
+    )
 
-    p = canvas.Canvas(response, pagesize=letter)
-    width, height = letter
+    pdf = canvas.Canvas(response, pagesize=letter)
 
-    #  Título
-    p.setFont("Helvetica-Bold", 16)
-    p.drawString(180, 750, "SISTEMA DE PRÉSTAMOS DE LABORATORIO")
+    pdf.setFont("Helvetica-Bold", 16)
+    pdf.drawString(
+        140,
+        760,
+        "SISTEMA DE INVENTARIO DE LABORATORIOS"
+    )
 
-    #  Subtítulo
-    p.setFont("Helvetica", 12)
-    p.drawString(250, 730, "Reporte de Equipos")
+    pdf.setFont("Helvetica", 12)
+    pdf.drawString(
+        220,
+        740,
+        "Reporte de Equipos"
+    )
 
-    #  Fecha
-    fecha = datetime.now().strftime("%Y-%m-%d %H:%M")
-    p.setFont("Helvetica", 10)
-    p.drawString(420, 710, f"Fecha: {fecha}")
+    fecha = datetime.now().strftime("%d/%m/%Y %H:%M")
 
-    #  Línea separadora
-    p.line(50, 700, 550, 700)
+    pdf.setFont("Helvetica", 10)
+    pdf.drawString(
+        390,
+        720,
+        f"Fecha: {fecha}"
+    )
 
-    #  Encabezados tabla
-    p.setFont("Helvetica-Bold", 10)
-    p.drawString(50, 670, "Código")
-    p.drawString(120, 670, "Nombre")
-    p.drawString(250, 670, "Marca")
-    p.drawString(350, 670, "Modelo")
-    p.drawString(450, 670, "Estado")
+    pdf.line(50, 710, 550, 710)
 
-    y = 650
-    p.setFont("Helvetica", 9)
+    pdf.setFont("Helvetica-Bold", 10)
 
-    equipos = Equipo.objects.all()
+    pdf.drawString(50, 690, "Código")
+    pdf.drawString(120, 690, "Nombre")
+    pdf.drawString(250, 690, "Marca")
+    pdf.drawString(350, 690, "Modelo")
+    pdf.drawString(450, 690, "Estado")
 
-    for e in equipos:
-        p.drawString(50, y, str(e.codigo))
-        p.drawString(120, y, str(e.nombre))
-        p.drawString(250, y, str(e.marca))
-        p.drawString(350, y, str(e.modelo))
-        p.drawString(450, y, str(e.estado))
+    y = 670
+
+    pdf.setFont("Helvetica", 9)
+
+    for equipo in Equipo.objects.all():
+
+        pdf.drawString(50, y, str(equipo.codigo))
+        pdf.drawString(120, y, str(equipo.nombre))
+        pdf.drawString(250, y, str(equipo.marca))
+        pdf.drawString(350, y, str(equipo.modelo))
+        pdf.drawString(450, y, str(equipo.estado))
 
         y -= 20
 
-        #  nueva página si se llena
-        if y < 50:
-            p.showPage()
-            y = 750
+        if y <= 50:
+            pdf.showPage()
+            y = 760
 
-    p.save()
+    pdf.save()
+
     return response
