@@ -1,59 +1,138 @@
 {% extends 'base.html' %}
 
+{% block title %}Préstamos{% endblock %}
+
 {% block content %}
 
-<h2>Préstamos</h2>
+<div class="container-fluid">
 
-<a href="{% url 'crear_prestamo' %}" class="btn btn-primary mb-3">
-    ➕ Nuevo Préstamo
-</a>
-<a href="{% url 'reporte_prestamos_pdf' %}" class="btn btn-danger mb-3">
-    📄 Descargar PDF
-</a>
-<table class="table table-striped table-bordered">
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <thead class="table-dark">
-        <tr>
-            <th>Usuario</th>
-            <th>Equipo</th>
-            <th>Fecha Préstamo</th>
-            <th>Fecha Devolución</th>
-            <th>Estado</th>
-        </tr>
-    </thead>
+        <div>
+            <h2 class="fw-bold mb-1">Préstamos</h2>
+            <p class="text-secondary mb-0">
+                Administración de préstamos de equipos
+            </p>
+        </div>
 
-    <tbody>
+        <div class="d-flex gap-2">
 
-        {% for prestamo in prestamos %}
+            <a href="{% url 'reporte_prestamos_pdf' %}" class="btn btn-outline-danger rounded-3 px-4">
 
-        <tr>
+                <i class="bi bi-file-earmark-pdf"></i>
+                PDF
 
-            <td>{{ prestamo.usuario.username }}</td>
+            </a>
 
-            <td>{{ prestamo.equipo.nombre }}</td>
+            <a href="{% url 'crear_prestamo' %}" class="btn btn-unemi rounded-3 px-4">
 
-            <td>{{ prestamo.fecha_prestamo }}</td>
+                <i class="bi bi-plus-circle"></i>
+                Nuevo préstamo
 
-            <td>{{ prestamo.fecha_devolucion }}</td>
+            </a>
 
-            <td>{{ prestamo.estado }}</td>
+        </div>
 
-        </tr>
+    </div>
 
-        {% empty %}
+    <div class="card shadow-sm border-0 rounded-4">
 
-        <tr>
+        <div class="card-body">
 
-            <td colspan="5" class="text-center">
-                No existen préstamos registrados.
-            </td>
+            <div class="table-responsive">
 
-        </tr>
+                <table class="table align-middle table-hover">
 
-        {% endfor %}
+                    <thead class="table-light">
 
-    </tbody>
+                        <tr>
 
-</table>
+                            <th>Usuario</th>
+                            <th>Equipo</th>
+                            <th>Fecha préstamo</th>
+                            <th>Fecha devolución</th>
+                            <th>Estado</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for prestamo in prestamos %}
+
+                        <tr>
+
+                            <td>
+                                {{ prestamo.usuario.username }}
+                            </td>
+
+                            <td>
+                                {{ prestamo.equipo.nombre }}
+                            </td>
+
+                            <td>
+                                {{ prestamo.fecha_prestamo }}
+                            </td>
+
+                            <td>
+                                {{ prestamo.fecha_devolucion }}
+                            </td>
+
+                            <td>
+
+                                {% if prestamo.estado == "Activo" %}
+
+                                <span class="badge bg-success">
+                                    Activo
+                                </span>
+
+                                {% elif prestamo.estado == "Devuelto" %}
+
+                                <span class="badge bg-primary">
+                                    Devuelto
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-secondary">
+                                    {{ prestamo.estado }}
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="5" class="text-center py-5 text-secondary">
+
+                                <i class="bi bi-inbox fs-1"></i>
+
+                                <br><br>
+
+                                No existen préstamos registrados.
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}
