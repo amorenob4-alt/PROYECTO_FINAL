@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 </head>
 
@@ -18,117 +19,156 @@
 
     <div class="d-flex h-screen overflow-hidden">
 
+        <!-- SIDEBAR -->
         <aside class="sidebar d-flex flex-column justify-content-between p-3">
+
             <div>
+
                 <div class="logo d-flex align-items-center gap-3 py-2 px-1 mb-4">
-                    <div class="logo-icon-bg flex-shrink-0">
+                    <div class="logo-icon-bg">
                         <i class="bi bi-pc-display-horizontal fs-4 text-white"></i>
                     </div>
-                    <div class="lh-sm">
-                        <span class="d-block fw-bold tracking-tight text-white m-0 fs-5">UNEMI</span>
-                        <span class="text-uppercase text-white-50 opacity-75 fw-medium"
-                            style="font-size: 0.65rem; letter-spacing: 0.05em;">Sistema de Inventario</span>
+
+                    <div>
+                        <h4 class="text-white fw-bold m-0">UNEMI</h4>
+                        <small class="text-white-50">
+                            Sistema de Inventario
+                        </small>
                     </div>
                 </div>
 
-                <ul class="nav flex-column gap-1">
+                <ul class="nav flex-column gap-2">
+
                     <li class="nav-item">
                         <a href="{% url 'dashboard' %}"
                             class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                             <i class="bi bi-speedometer2"></i>
-                            <span>Dashboard</span>
+                            Dashboard
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'lista_equipos' %}"
                             class="nav-link {% if request.resolver_match.url_name == 'lista_equipos' %}active{% endif %}">
                             <i class="bi bi-laptop"></i>
-                            <span>Equipos</span>
+                            Equipos
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'lista_prestamos' %}"
                             class="nav-link {% if request.resolver_match.url_name == 'lista_prestamos' %}active{% endif %}">
                             <i class="bi bi-clipboard-check"></i>
-                            <span>Préstamos</span>
+                            Préstamos
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'lista_usuarios' %}"
                             class="nav-link {% if request.resolver_match.url_name == 'lista_usuarios' %}active{% endif %}">
                             <i class="bi bi-people"></i>
-                            <span>Usuarios</span>
+                            Usuarios
                         </a>
                     </li>
-                    {% if is_admin %}
-                    <li class="nav-item">
-                        <a href="/admin-panel" class="nav-link">
-                            <i class="bi bi-gear"></i>
-                            <span>Administración</span>
-                        </a>
-                    </li>
-                    {% endif %}
+
                 </ul>
+
             </div>
 
-            <div class="d-flex align-items-center gap-2 mb-3 px-2">
-                <div class="user-avatar-text text-uppercase bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center"
-                    style="width: 36px; height: 36px; font-weight: 600;">
-                    {% if request.user.username %}
-                    {{ request.user.username|slice:":2" }}
-                    {% else %}
-                    AD
-                    {% endif %}
+            <div>
+
+                <div class="d-flex align-items-center gap-2 mb-3">
+
+                    <div class="user-avatar-text bg-secondary text-white">
+
+                        {% if request.user.username %}
+                        {{ request.user.username|slice:":2"|upper }}
+                        {% else %}
+                        AD
+                        {% endif %}
+
+                    </div>
+
+                    <div>
+
+                        <strong class="text-white">
+                            Administrador
+                        </strong>
+
+                        <br>
+
+                        <small class="text-white-50">
+                            {{ request.user.username }}
+                        </small>
+
+                    </div>
+
                 </div>
-                <div class="lh-sm">
-                    <p class="text-white small fw-medium m-0">Administrador</p>
-                    <p class="text-white-50 m-0" style="font-size: 0.75rem;">{{ request.user.username|default:"admin" }}
-                    </p>
-                </div>
-            </div>
 
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="submit"
-                    class="btn btn-logout-unemi w-100 text-start px-2 py-1.5 d-flex align-items-center gap-2">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>Cerrar sesión</span>
-                </button>
-            </form>
-    </div>
-    </aside>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
 
-    <main class="content-wrapper flex-grow-1 d-flex flex-column bg-light-unemi overflow-auto">
+                    <button type="submit" class="btn btn-logout-unemi w-100 d-flex align-items-center gap-2">
 
-        <header class="topbar bg-white px-4 py-3 d-flex align-items-center justify-content-between border-bottom">
-            <button class="btn p-0 border-0 text-secondary fs-4" id="toggle-sidebar">
-                <i class="bi bi-list"></i>
-            </button>
+                        <i class="bi bi-box-arrow-right"></i>
 
-            <div class="d-flex align-items-center gap-3">
-                <button class="btn p-0 position-relative text-secondary fs-5">
-                    <i class="bi bi-bell"></i>
-                    <span
-                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
-                </button>
-                <div class="dropdown">
-                    <button class="btn p-0 border-0 text-dark small fw-medium dropdown-toggle" type="button"
-                        data-bs-toggle="dropdown">
-                        Administrador
+                        Cerrar sesión
+
                     </button>
+
+                </form>
+
+            </div>
+
+        </aside>
+
+        <!-- CONTENIDO -->
+        <main class="content-wrapper flex-grow-1">
+
+            <header class="topbar bg-white border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
+
+                <button class="btn border-0">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <button class="btn border-0 position-relative">
+
+                        <i class="bi bi-bell fs-5"></i>
+
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        </span>
+
+                    </button>
+
+                    <div class="dropdown">
+
+                        <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
+
+                            Administrador
+
+                        </button>
+
+                    </div>
+
                 </div>
-        </header>
 
-        <div class="container-fluid p-4">
-            {% block content %}
-            {% endblock %}
-        </div>
+            </header>
 
-    </main>
+            <div class="container-fluid p-4">
+
+                {% block content %}
+                {% endblock %}
+
+            </div>
+
+        </main>
 
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>
