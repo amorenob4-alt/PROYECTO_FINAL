@@ -71,56 +71,61 @@
                 </ul>
             </div>
 
-            <div class="logout-section border-top pt-3">
-                <div class="d-flex align-items-center gap-2 mb-3 px-2">
-                    <div class="user-avatar-text text-uppercase">
-                        {{ request.user.username|slice:":2" }}
-                    </div>
-                    <div class="lh-sm">
-                        <p class="text-white small fw-medium m-0">Administrador</p>
-                        <p class="text-white-50 m-0" style="font-size: 0.75rem;">{{ request.user.username }}</p>
-                    </div>
+            <div class="d-flex align-items-center gap-2 mb-3 px-2">
+                <div class="user-avatar-text text-uppercase bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center"
+                    style="width: 36px; height: 36px; font-weight: 600;">
+                    {% if request.user.username %}
+                    {{ request.user.username|slice:":2" }}
+                    {% else %}
+                    AD
+                    {% endif %}
                 </div>
-
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit"
-                        class="btn btn-logout-unemi w-100 text-start px-2 py-1.5 d-flex align-items-center gap-2">
-                        <i class="bi bi-box-arrow-right"></i>
-                        <span>Cerrar sesión</span>
-                    </button>
-                </form>
+                <div class="lh-sm">
+                    <p class="text-white small fw-medium m-0">Administrador</p>
+                    <p class="text-white-50 m-0" style="font-size: 0.75rem;">{{ request.user.username|default:"admin" }}
+                    </p>
+                </div>
             </div>
-        </aside>
 
-        <main class="content-wrapper flex-grow-1 d-flex flex-column bg-light-unemi overflow-auto">
-
-            <header class="topbar bg-white px-4 py-3 d-flex align-items-center justify-content-between border-bottom">
-                <button class="btn p-0 border-0 text-secondary fs-4" id="toggle-sidebar">
-                    <i class="bi bi-list"></i>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit"
+                    class="btn btn-logout-unemi w-100 text-start px-2 py-1.5 d-flex align-items-center gap-2">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Cerrar sesión</span>
                 </button>
+            </form>
+    </div>
+    </aside>
 
-                <div class="d-flex align-items-center gap-3">
-                    <button class="btn p-0 position-relative text-secondary fs-5">
-                        <i class="bi bi-bell"></i>
-                        <span
-                            class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+    <main class="content-wrapper flex-grow-1 d-flex flex-column bg-light-unemi overflow-auto">
+
+        <header class="topbar bg-white px-4 py-3 d-flex align-items-center justify-content-between border-bottom">
+            <button class="btn p-0 border-0 text-secondary fs-4" id="toggle-sidebar">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn p-0 position-relative text-secondary fs-5">
+                    <i class="bi bi-bell"></i>
+                    <span
+                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                </button>
+                <div class="dropdown">
+                    <button class="btn p-0 border-0 text-dark small fw-medium dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown">
+                        Administrador
                     </button>
-                    <div class="dropdown">
-                        <button class="btn p-0 border-0 text-dark small fw-medium dropdown-toggle" type="button"
-                            data-bs-toggle="dropdown">
-                            Administrador
-                        </button>
-                        </button>
-                    </div>
-            </header>
+                    </button>
+                </div>
+        </header>
 
-            <div class="container-fluid p-4">
-                {% block content %}
-                {% endblock %}
-            </div>
+        <div class="container-fluid p-4">
+            {% block content %}
+            {% endblock %}
+        </div>
 
-        </main>
+    </main>
 
     </div>
 
