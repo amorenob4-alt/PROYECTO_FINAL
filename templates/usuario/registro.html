@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2>Registro de Usuario</h2>
+
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        {{ form.errors }}
+    </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-success">
+            Registrarse
+        </button>
+
+        <a href="{% url 'login' %}" class="btn btn-secondary">
+            Iniciar sesión
+        </a>
+    </form>
+
+</div>
+
+{% endblock %}
