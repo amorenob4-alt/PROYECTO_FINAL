@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 
 
 class UsuarioForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for campo in self.fields.values():
+            campo.widget.attrs['class'] = 'form-control'
+            
     password = forms.CharField(
         widget=forms.PasswordInput(),
         label="Contraseña"

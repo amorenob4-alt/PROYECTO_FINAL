@@ -2,28 +2,49 @@
 
 {% block content %}
 
-<div class="container mt-5">
+<div class="container d-flex justify-content-center align-items-center" style="min-height:80vh;">
 
-    <h2>Registro de Usuario</h2>
+    <div class="card shadow-lg p-4" style="width:450px;border-radius:15px;">
 
-    {% if form.errors %}
-    <div class="alert alert-danger">
-        {{ form.errors }}
+        <h2 class="text-center mb-4">
+            Crear Cuenta
+        </h2>
+
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            {{ form.errors }}
+        </div>
+        {% endif %}
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <div class="d-grid">
+                <button class="btn btn-success">
+                    Registrarse
+                </button>
+            </div>
+
+            <hr>
+
+            <div class="text-center">
+
+                ¿Ya tienes una cuenta?
+
+                <br>
+
+                <a href="{% url 'login' %}" class="btn btn-outline-primary mt-2">
+                    Iniciar sesión
+                </a>
+
+            </div>
+
+        </form>
+
     </div>
-    {% endif %}
-
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-
-        <button type="submit" class="btn btn-success">
-            Registrarse
-        </button>
-
-        <a href="{% url 'login' %}" class="btn btn-secondary">
-            Iniciar sesión
-        </a>
-    </form>
 
 </div>
 
