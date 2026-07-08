@@ -11,4 +11,10 @@ urlpatterns = [
         name='crear_usuario'
     ),
 
+    path(
+        'registro/',
+        views.registro,
+        name='registro'
+    ),
+
 ]

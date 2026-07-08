@@ -16,7 +16,7 @@ class UsuarioForm(forms.ModelForm):
             "last_name",
             "email",
             "password",
-            "is_active",
+            
         ]
 
     def save(self, commit=True):
