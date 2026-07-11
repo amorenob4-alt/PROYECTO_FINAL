@@ -14,22 +14,28 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from usuario.forms import LoginForm
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from tu_app import views as tu_app_views
 
 urlpatterns = [
-    
+    # Login
+    path('', tu_app_views.login_view, name='login'),
+    path('login/', tu_app_views.login_view, name='login'),
 
+    # Admin de Django
     path('admin/', admin.site.urls),
+
+    # Apps
     path('', include('inventario.urls')),
     path('prestamos/', include('prestamo.urls')),
     path('usuarios/', include('usuario.urls')),
-    path( '',auth_views.LoginView.as_view(template_name='login.html',authentication_form=LoginForm),name='inicio'
-),
 
-    path('login/',auth_views.LoginView.as_view(template_name='login.html',authentication_form=LoginForm),name='login'
-),
+    # Dashboards
+    path('dashboard/admin/', tu_app_views.dashboard_admin, name='dashboard_admin'),
+    path('dashboard/user/', tu_app_views.dashboard_user, name='dashboard_user'),
+
+    # Cerrar sesión
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 ]
