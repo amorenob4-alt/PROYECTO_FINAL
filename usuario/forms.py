@@ -1,17 +1,16 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
 
 
 class UsuarioForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
-        for campo in self.fields.values():
-            campo.widget.attrs['class'] = 'form-control'
-            
     password = forms.CharField(
-        widget=forms.PasswordInput(),
-        label="Contraseña"
+        label="Contraseña",
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control form-control-lg',
+            'placeholder': 'Ingrese una contraseña'
+        })
     )
 
     class Meta:
@@ -22,8 +21,16 @@ class UsuarioForm(forms.ModelForm):
             "last_name",
             "email",
             "password",
-            
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for nombre, campo in self.fields.items():
+            if nombre != "password":
+                campo.widget.attrs.update({
+                    'class': 'form-control form-control-lg'
+                })
 
     def save(self, commit=True):
         usuario = super().save(commit=False)
@@ -33,3 +40,22 @@ class UsuarioForm(forms.ModelForm):
             usuario.save()
 
         return usuario
+
+
+class LoginForm(AuthenticationForm):
+
+    username = forms.CharField(
+        label="Usuario",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control form-control-lg',
+            'placeholder': 'Ingrese su usuario'
+        })
+    )
+
+    password = forms.CharField(
+        label="Contraseña",
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control form-control-lg',
+            'placeholder': 'Ingrese su contraseña'
+        })
+    )

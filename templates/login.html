@@ -2,51 +2,52 @@
 
 {% block content %}
 
-<div class="container d-flex justify-content-center align-items-center" style="min-height:80vh;">
+<h3 class="text-center fw-bold mb-4">
+    <i class="bi bi-box-arrow-in-right text-primary"></i>
+    Iniciar Sesión
+</h3>
 
-    <div class="card shadow-lg p-4" style="width:420px;border-radius:15px;">
+{% if form.errors %}
+<div class="alert alert-danger text-center">
+    Usuario o contraseña incorrectos.
+</div>
+{% endif %}
 
-        <h2 class="text-center mb-4">
-            🔐 Iniciar Sesión
-        </h2>
+<form method="POST">
 
-        {% if form.errors %}
-        <div class="alert alert-danger">
-            Usuario o contraseña incorrectos.
-        </div>
-        {% endif %}
+    {% csrf_token %}
 
-        <form method="POST">
-
-            {% csrf_token %}
-
-            {{ form.as_p }}
-
-            <div class="d-grid">
-
-                <button class="btn btn-primary">
-                    Ingresar
-                </button>
-
-            </div>
-
-            <hr>
-
-            <div class="text-center">
-
-                ¿No tienes una cuenta?
-
-                <br>
-
-                <a href="{% url 'registro' %}" class="btn btn-outline-success mt-2">
-                    Crear cuenta
-                </a>
-
-            </div>
-
-        </form>
-
+    <div class="mb-3">
+        {{ form.username.label_tag }}
+        {{ form.username }}
     </div>
+
+    <div class="mb-4">
+        {{ form.password.label_tag }}
+        {{ form.password }}
+    </div>
+
+    <div class="d-grid">
+        <button type="submit" class="btn btn-primary btn-lg">
+            <i class="bi bi-box-arrow-in-right"></i>
+            Ingresar
+        </button>
+    </div>
+
+</form>
+
+<hr>
+
+<div class="text-center">
+
+    <p class="text-muted">
+        ¿No tienes una cuenta?
+    </p>
+
+    <a href="{% url 'registro' %}" class="btn btn-success">
+        <i class="bi bi-person-plus-fill"></i>
+        Crear cuenta
+    </a>
 
 </div>
 
